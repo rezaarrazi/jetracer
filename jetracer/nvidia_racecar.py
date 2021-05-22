@@ -10,6 +10,7 @@ class NvidiaRacecar(Racecar):
     steering_offset = traitlets.Float(default_value=0)
     steering_channel = traitlets.Integer(default_value=0)
     throttle_gain = traitlets.Float(default_value=0.8)
+    throttle_trim = traitlets.Float(default_value=0.05)
     throttle_channel = traitlets.Integer(default_value=1)
     
     def __init__(self, *args, **kwargs):
@@ -22,6 +23,23 @@ class NvidiaRacecar(Racecar):
     def _on_steering(self, change):
         self.steering_motor.throttle = change['new'] * self.steering_gain + self.steering_offset
     
+    @traitlets.observe('steering_offset')
+    def _on_steering_offset(self, change):
+        self.steering_motor.throttle = self.steering_motor.throttle * self.steering_gain + change['new']
+
+    @traitlets.observe('steering_gain')
+    def _on_steering_gain(self, change):
+        self.steering_motor.throttle = self.steering_motor.throttle * change['new'] + self.steering_gain
+
     @traitlets.observe('throttle')
     def _on_throttle(self, change):
-        self.throttle_motor.throttle = change['new'] * self.throttle_gain
+        self.throttle_motor.throttle = change['new'] * self.throttle_gain + self.throttle_trim
+
+    @traitlets.observe('throttle_trim')
+    def _on_throttle_trim(self, change):
+        self.throttle_motor.throttle = self.throttle_motor.throttle * self.throttle_gain + change['new']
+
+    @traitlets.observe('throttle_gain')
+    def _on_throttle_gain(self, change):
+        self.throttle_motor.throttle = self.throttle_motor.throttle * change['new'] + self.throttle_trim
+    

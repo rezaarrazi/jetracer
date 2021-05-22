@@ -1,0 +1,11 @@
+jetracer.egg-info
+build/
+dist/
+__pycache__/
+*.so
+*.pb.h
+*.pb.cc
+*_pb2.py
+*.pyc
+*.ipynb_checkpoints
+*.pth
