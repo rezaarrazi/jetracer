@@ -18,7 +18,7 @@ class NvidiaRacecar(Racecar):
         self.kit = ServoKit(channels=16, address=self.i2c_address)
         self.steering_motor = self.kit.continuous_servo[self.steering_channel]
         self.throttle_motor = self.kit.continuous_servo[self.throttle_channel]
-    
+
     @traitlets.observe('steering')
     def _on_steering(self, change):
         self.steering_motor.throttle = change['new'] * self.steering_gain + self.steering_offset
@@ -29,7 +29,7 @@ class NvidiaRacecar(Racecar):
 
     @traitlets.observe('steering_gain')
     def _on_steering_gain(self, change):
-        self.steering_motor.throttle = self.steering_motor.throttle * change['new'] + self.steering_gain
+        self.steering_motor.throttle = self.steering_motor.throttle * change['new'] + self.steering_offset
 
     @traitlets.observe('throttle')
     def _on_throttle(self, change):
